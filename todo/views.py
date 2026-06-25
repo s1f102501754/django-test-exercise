@@ -17,6 +17,6 @@ def index(request):
         tasks = Task.objects.order_by('-posted_at')
 
     context = {
-        'tasks':tasks
+        'tasks': tasks
     }
     return render(request, 'todo/index.html', context)
