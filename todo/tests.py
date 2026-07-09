@@ -114,3 +114,14 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_close_get(self):
+        task = Task(title='task1')
+        task.save()
+        client = Client()
+        response = client.get('/{}/close'.format(task.pk))
+
+        task.refresh_from_db()
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/', fetch_redirect_response=False)
+        self.assertTrue(task.completed)
