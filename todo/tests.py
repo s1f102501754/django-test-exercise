@@ -125,3 +125,19 @@ class TodoViewTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/', fetch_redirect_response=False)
         self.assertTrue(task.completed)
+
+    def test_delete_get_success(self):
+        task = Task(title='task-to-delete')
+        task.save()
+        client = Client()
+        response = client.get('/{}/delete'.format(task.pk))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/', fetch_redirect_response=False)
+        self.assertFalse(Task.objects.filter(pk=task.pk).exists())
+
+    def test_delete_get_fail(self):
+        client = Client()
+        response = client.get('/9999/delete')
+
+        self.assertEqual(response.status_code, 404)
