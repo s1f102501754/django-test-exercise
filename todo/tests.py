@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.utils import timezone
 from datetime import datetime
 from todo.models import Task
+from django.urls import reverse
 
 
 # Create your tests here.
@@ -141,3 +142,40 @@ class TodoViewTestCase(TestCase):
         response = client.get('/9999/delete')
 
         self.assertEqual(response.status_code, 404)
+        
+class TodoEditTestCase(TestCase):
+    def test_update_get_success(self):
+        task = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1, 12, 0, 0)))
+        task.save()
+        client = Client()
+
+        response = client.get(reverse('update', args=[task.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'todo/edit.html')
+        self.assertEqual(response.context['task'], task)
+
+    def test_update_post_success(self):
+        task = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1, 12, 0, 0)))
+        task.save()
+        client = Client()
+        data = {
+            'title': 'updated task1',
+            'due_at': '2024-07-02 15:30:00',
+        }
+
+        response = client.post(reverse('update', args=[task.pk]), data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('detail', args=[task.pk]))
+
+        task.refresh_from_db()
+        self.assertEqual(task.title, 'updated task1')
+        self.assertEqual(task.due_at, timezone.make_aware(datetime(2024, 7, 2, 15, 30, 0)))
+
+    def test_update_get_fail(self):
+        client = Client()
+        response = client.get(reverse('update', args=[999]))
+
+        self.assertEqual(response.status_code, 404)
+
