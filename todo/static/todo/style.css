@@ -10,7 +10,21 @@ body {
 
 h1 {
     color: #ff7f50;
+    margin: 0;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     margin-bottom: 0.5rem;
+}
+
+.title-image {
+    height: 1.1rem;
+    max-height: 1.2rem;
+    width: auto;
+    object-fit: contain;
 }
 
 form {

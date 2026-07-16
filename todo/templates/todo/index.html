@@ -10,7 +10,9 @@
   </head>
 
   <body>
-    <h1>Sample To Do Application</h1>
+    <div class="header-title">
+      <h1><img src="{% static 'todo/suica.png' %}" alt="Suica" class="title-image" style="height:3.1rem; width:auto;">Sample To Do Application<img src="{% static 'todo/suica.png' %}" alt="Suica" class="title-image" style="height:3.1rem; width:auto;"></h1>
+    </div>
     <p>You can submit tasks from the following form.</p>
     <form action="{% url 'index' %}" method="post">
       {% csrf_token %}
