@@ -10,25 +10,61 @@
   </head>
 
   <body>
-    <h1>{{ task.title }}</h1>
-    <ul>
-      <li>Posted at: {{ task.posted_at }}</li>
-      {% if task.due_at %}
-      <li>Due at: {{ task.due_at }}</li>
-      {% endif %}
-      {% if task.completed %}
-      <li>Status: Completed</li>
-      {% else %}
-      <li>Status: Not Completed</li>
-      {% endif %}
-    </ul>
+    <div class="detail-card">
+      <div class="detail-header">
+        <h1>{{ task.title }}</h1>
+        <span id="status-badge" data-completed="{% if task.completed %}true{% else %}false{% endif %}" style="display:inline-block; padding:0.3rem 0.7rem; border-radius:999px; font-weight:700;">
+          {% if task.completed %}Completed{% else %}Not Completed{% endif %}
+        </span>
+      </div>
 
-    <div>
-      <a href="{% url 'index' %}">Top</a>
-      <a href="{% url 'close' task.id %}">Close</a>
-      <a href="{% url 'update' task.id %}">Edit</a>
-      <a href="{% url 'delete' task.id %}">Delete</a>
+      <div class="detail-meta">
+        <p><strong>Posted at:</strong> {{ task.posted_at }}</p>
+        <p><strong>Due at:</strong> {% if task.due_at %}{{ task.due_at }}{% else %}Not set{% endif %}</p>
+        <p><strong>Status:</strong> <span id="status-text">{% if task.completed %}Completed{% else %}Not Completed{% endif %}</span></p>
+
+        <form id="status-form" style="margin-top:0.8rem;">
+          <label for="status-select"><strong>Change status:</strong></label>
+          <select id="status-select" name="status" style="margin:0 0.5rem;">
+            <option value="not_completed" {% if not task.completed %}selected{% endif %}>Not Completed</option>
+            <option value="completed" {% if task.completed %}selected{% endif %}>Completed</option>
+          </select>
+          <button type="submit">Update</button>
+        </form>
+      </div>
+
+      <div class="detail-actions">
+        <a href="{% url 'index' %}">Top</a>
+        <a href="{% url 'close' task.id %}">Close</a>
+        <a href="{% url 'update' task.id %}">Edit</a>
+        <a href="{% url 'delete' task.id %}">Delete</a>
+      </div>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('status-form');
+        const select = document.getElementById('status-select');
+        const statusText = document.getElementById('status-text');
+        const statusBadge = document.getElementById('status-badge');
+
+        if (!form || !select || !statusText || !statusBadge) {
+          return;
+        }
+
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+
+          const isCompleted = select.value === 'completed';
+          const nextText = isCompleted ? 'Completed' : 'Not Completed';
+
+          statusText.textContent = nextText;
+          statusBadge.textContent = nextText;
+          statusBadge.style.background = isCompleted ? '#dff7e7' : '#ffe5c9';
+          statusBadge.style.color = isCompleted ? '#1f7a3b' : '#9a4d00';
+        });
+      });
+    </script>
   </body>
 
 </html>

@@ -10,7 +10,9 @@
   </head>
 
   <body>
-    <h1>Sample To Do Application</h1>
+    <div class="header-title">
+      <h1><img src="{% static 'todo/suica.png' %}" alt="Suica" class="title-image" style="height:3.1rem; width:auto;">Sample To Do Application<img src="{% static 'todo/suica.png' %}" alt="Suica" class="title-image" style="height:3.1rem; width:auto;"></h1>
+    </div>
     <p>You can submit tasks from the following form.</p>
     <form action="{% url 'index' %}" method="post">
       {% csrf_token %}
@@ -27,6 +29,34 @@
       </div>
     </form>
     <br>
+
+    <h2>{{ year }}年 {{ month }}月</h2>
+
+    <table class="calendar">
+        <tr>
+            <th>月</th>
+            <th>火</th>
+            <th>水</th>
+            <th>木</th>
+            <th>金</th>
+            <th>土</th>
+            <th>日</th>
+        </tr>
+
+        {% for week in calendar %}
+        <tr>
+            {% for cell in week %}
+            <td>
+                {{ cell.day }}
+
+                {% if cell.has_task %}
+                    ☆
+                {% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
 
     <div>
       <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
