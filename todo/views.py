@@ -3,6 +3,8 @@ from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
 from todo.models import Task
+import calendar
+from datetime import datetime
 
 
 # Create your views here.
@@ -16,12 +18,49 @@ def index(request):
         tasks = Task.objects.order_by('due_at')
     else:
         tasks = Task.objects.order_by('-posted_at')
+    
+    today = datetime.today()
+    year = today.year
+    month = today.month
+
+    cal = calendar.monthcalendar(year, month)
+
+    due_days = []
+    for task in tasks:
+        if task.due_at:
+            due_days.append(task.due_at.day)
+
+    # カレンダー表示用
+    calendar_data = []
+    for week in cal:
+        week_data = []
+
+        for day in week:
+
+            # day==0 はその月ではない部分
+            if day == 0:
+                week_data.append({
+                    "day": "",
+                    "has_task": False
+                })
+
+            else:
+                week_data.append({
+                    "day": day,
+                    "has_task": day in due_days
+                })
+
+        calendar_data.append(week_data)
 
     context = {
-        'tasks': tasks
+        "tasks": tasks,
+        "calendar": calendar_data,
+        "year": year,
+        "month": month,
+        'due_days': due_days,
     }
-    return render(request, 'todo/index.html', context)
 
+    return render(request, "todo/index.html", context)
 
 def detail(request, task_id):
     try:

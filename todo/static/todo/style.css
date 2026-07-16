@@ -55,3 +55,22 @@ a:hover {
     color: #ff7f50;
     text-decoration: none;
 }
+
+.calendar {
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: #f0f0f0;
+}
+
+.calendar th,
+.calendar td {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #999;
+    text-align: center;
+    vertical-align: top;
+}
+
+.calendar th {
+    background-color: #f0f0f0;
+}
