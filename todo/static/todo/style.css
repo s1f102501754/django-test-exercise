@@ -70,6 +70,22 @@ a:hover {
     text-decoration: none;
 }
 
+.marquee {
+    margin: 2rem 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+}
+
+.moving-image {
+    display: block;
+    height: 3.1rem;
+    width: auto;
+    object-fit: contain;
+    will-change: transform;
+    position: relative;
+    left: 0;
+}
 .calendar {
     border-collapse: collapse;
     margin: 20px 0;
