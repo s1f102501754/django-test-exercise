@@ -7,23 +7,93 @@
     <link rel="stylesheet" href="{% static 'todo/style.css' %}">
     <meta charset="UTF-8">
     <meta name="author" content="INIAD">
+    <style>
+      /* レイアウト補助用 */
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+      .form-group label {
+        font-weight: 700;
+      }
+      .form-group input[type="text"],
+      .form-group input[type="datetime-local"] {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid #bcecff;
+        border-radius: 8px;
+        box-sizing: border-box;
+        margin-top: 0.3rem;
+      }
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+      }
+      .checkbox-group input[type="checkbox"] {
+        width: 1.1rem;
+        height: 1.1rem;
+        cursor: pointer;
+      }
+      .button-group {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+      }
+      .error-box {
+        background-color: #ffeef0;
+        border: 1px solid #ffccd3;
+        color: #ff3860;
+        padding: 0.8rem;
+        border-radius: 8px;
+        margin-bottom: 1.2rem;
+        font-size: 0.9rem;
+      }
+    </style>
   </head>
 
   <body>
     <h1>Edit task</h1>
     <p>You can edit tasks from the following form.</p>
-    <form action="{% url 'update' task.id%}" method="post">
+
+    <form action="{% url 'update' task.id %}" method="post">
       {% csrf_token %}
-      <div>
-        <label for="titleInput">Title</label><br>
-        <input id="titleInput" name="title" type="text" placeholder="Input title" value="{{ task.title }}">
+
+      <!-- 【機能追加③】エラーメッセージがある場合に赤字で表示 -->
+      {% if error_message %}
+        <div class="error-box">
+          <p style="margin: 0;">{{ error_message }}</p>
+        </div>
+      {% endif %}
+
+      <!-- Title 入力欄 -->
+      <div class="form-group">
+        <label for="titleInput">Title</label>
+        <!-- 入力エラーで戻ってきた時に、入力中だったタイトルを保持します -->
+        <input id="titleInput" name="title" type="text" placeholder="Input title" value="{{ request.POST.title|default:task.title }}">
       </div>
-      <div>
-        <label for="dueInput">Due at:</label><br>
-        <input id="dueInput" name="due_at" type="datetime-local" value="{{ task.due_at |date:"Y-m-d H:i" }}">
+
+      <!-- Due at 入力欄 -->
+      <div class="form-group">
+        <label for="dueInput">Due at:</label>
+        <input id="dueInput" name="due_at" type="datetime-local" value="{{ request.POST.due_at|default:task.due_at|date:'Y-m-d\TH:i' }}">
       </div>
-      <div>
+
+      <!-- 【機能追加①】Completed（完了チェックボックス） -->
+      <div class="checkbox-group">
+        <input type="checkbox" id="completedInput" name="completed" {% if task.completed %}checked{% endif %}>
+        <label for="completedInput" style="cursor: pointer; user-select: none;">
+          Mark as Completed (完了にする)
+        </label>
+      </div>
+
+      <!-- ボタンエリア -->
+      <div class="button-group">
         <button type="submit">Submit</button>
+        
+        <!-- 【機能追加②】Cancel ボタン（詳細画面に戻る） -->
+        <a href="{% url 'detail' task.id %}">Cancel</a>
       </div>
     </form>
     <br>
