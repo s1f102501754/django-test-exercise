@@ -51,6 +51,12 @@
       </ul>
     </div>
     {% endfor %}
+
+    <div class="marquee" aria-label="moving kakigori">
+      <img src="{% static 'todo/kakigori.png' %}" alt="Kakigori" class="moving-image">
+    </div>
+
+    <script src="{% static 'todo/marquee.js' %}"></script>
   </body>
 
 </html>

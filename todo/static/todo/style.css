@@ -69,3 +69,20 @@ a:hover {
     color: #ff7f50;
     text-decoration: none;
 }
+
+.marquee {
+    margin: 2rem 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+}
+
+.moving-image {
+    display: block;
+    height: 3.1rem;
+    width: auto;
+    object-fit: contain;
+    will-change: transform;
+    position: relative;
+    left: 0;
+}
